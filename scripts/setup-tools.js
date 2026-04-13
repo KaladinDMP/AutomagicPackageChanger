@@ -21,7 +21,7 @@ const TOOLS = [
   },
   {
     name: 'uber-apk-signer.jar',
-    url: 'https://github.com/nicholasgasior/uber-apk-signer/releases/download/1.3.0/uber-apk-signer-1.3.0.jar',
+    url: 'https://github.com/patrickfav/uber-apk-signer/releases/download/v1.3.0/uber-apk-signer-1.3.0.jar',
     description: 'Uber APK Signer v1.3.0'
   }
 ];
