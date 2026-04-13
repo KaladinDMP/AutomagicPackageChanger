@@ -1,6 +1,8 @@
 const { app } = require('electron');
+const path = require('path');
 const ApkProcessor = require('./apk-processor');
 const { extractPackageName } = require('./manifest-editor');
+const { checkObb } = require('./obb-handler');
 
 function registerIpcHandlers(ipcMain) {
   ipcMain.handle('process-apk', async (event, { filePath, mode, customTag }) => {
@@ -33,6 +35,11 @@ function registerIpcHandlers(ipcMain) {
     } catch (err) {
       return { error: err.message };
     }
+  });
+
+  ipcMain.handle('check-obb', (_event, { filePath, packageName }) => {
+    const apkDir = path.dirname(filePath);
+    return checkObb(apkDir, packageName);
   });
 
   ipcMain.handle('get-version', () => {
