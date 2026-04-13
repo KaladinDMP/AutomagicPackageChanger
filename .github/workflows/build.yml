@@ -109,18 +109,23 @@ jobs:
             echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
           fi
 
-      - name: Create and push tag
+      - name: Create tag if it doesn't exist
         if: github.event_name == 'workflow_dispatch'
         run: |
-          git tag ${{ steps.version.outputs.tag }}
-          git push origin ${{ steps.version.outputs.tag }}
+          git fetch --tags
+          if git rev-parse "${{ steps.version.outputs.tag }}" >/dev/null 2>&1; then
+            echo "Tag ${{ steps.version.outputs.tag }} already exists, skipping creation"
+          else
+            git tag ${{ steps.version.outputs.tag }}
+            git push origin ${{ steps.version.outputs.tag }}
+          fi
 
       - name: Download artifacts
         uses: actions/download-artifact@v4
         with:
           path: artifacts
 
-      - name: Create GitHub Release
+      - name: Create or update GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.version.outputs.tag }}
