@@ -1,0 +1,28 @@
+appId: com.automagic.packagechanger
+productName: AutomagicPackageChanger
+directories:
+  output: dist
+win:
+  target:
+    - target: portable
+      arch:
+        - x64
+    - target: nsis
+      arch:
+        - x64
+  icon: resources/icon.ico
+portable:
+  artifactName: AutomagicPackageChanger-Portable.exe
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  installerIcon: resources/icon.ico
+extraResources:
+  - from: resources/tools
+    to: tools
+    filter:
+      - "**/*"
+  - from: resources/jre
+    to: jre
+    filter:
+      - "**/*"

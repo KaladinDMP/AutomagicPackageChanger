@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self';">
+  <title>AutomagicPackageChanger</title>
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/neon-theme.css">
+  <link rel="stylesheet" href="styles/drop-zone.css">
+</head>
+<body>
+  <!-- CRT Scanline Overlay -->
+  <div class="scanlines"></div>
+
+  <!-- Custom Title Bar -->
+  <div class="title-bar" id="titleBar">
+    <div class="title-bar-drag">
+      <span class="title-bar-icon">&#x2620;</span>
+      <span class="title-bar-text">AUTOMAGIC PACKAGE CHANGER</span>
+    </div>
+    <div class="title-bar-controls">
+      <button class="title-btn minimize" id="btnMinimize" title="Minimize">&#x2015;</button>
+      <button class="title-btn maximize" id="btnMaximize" title="Maximize">&#x25A1;</button>
+      <button class="title-btn close" id="btnClose" title="Close">&#x2715;</button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="app-container">
+
+    <!-- Header -->
+    <header class="app-header">
+      <div class="logo-container">
+        <div class="skull-icon">&#x2620;</div>
+        <h1 class="app-title">
+          <span class="title-auto">AUTO</span><span class="title-magic">MAGIC</span>
+          <br>
+          <span class="title-sub">PACKAGE CHANGER</span>
+        </h1>
+      </div>
+      <div class="neon-pipe-horizontal"></div>
+    </header>
+
+    <!-- Drop Zone -->
+    <div class="drop-zone" id="dropZone">
+      <div class="drop-zone-inner">
+        <div class="drop-icon" id="dropIcon">
+          <svg viewBox="0 0 100 100" class="circuit-icon">
+            <rect x="30" y="20" width="40" height="50" rx="3" fill="none" stroke="currentColor" stroke-width="2"/>
+            <line x1="50" y1="70" x2="50" y2="85" stroke="currentColor" stroke-width="2"/>
+            <line x1="35" y1="20" x2="35" y2="10" stroke="currentColor" stroke-width="2"/>
+            <line x1="50" y1="20" x2="50" y2="10" stroke="currentColor" stroke-width="2"/>
+            <line x1="65" y1="20" x2="65" y2="10" stroke="currentColor" stroke-width="2"/>
+            <circle cx="35" cy="10" r="3" fill="currentColor"/>
+            <circle cx="50" cy="10" r="3" fill="currentColor"/>
+            <circle cx="65" cy="10" r="3" fill="currentColor"/>
+            <circle cx="50" cy="85" r="3" fill="currentColor"/>
+            <text x="50" y="50" text-anchor="middle" fill="currentColor" font-size="14" font-family="monospace">APK</text>
+          </svg>
+        </div>
+        <p class="drop-text" id="dropText">DROP APK HERE</p>
+        <p class="drop-subtext">or click to browse</p>
+      </div>
+      <div class="drop-zone-corners">
+        <span class="corner tl"></span>
+        <span class="corner tr"></span>
+        <span class="corner bl"></span>
+        <span class="corner br"></span>
+      </div>
+    </div>
+
+    <!-- Mode Selector -->
+    <div class="mode-section" id="modeSection">
+      <div class="neon-pipe-horizontal short"></div>
+      <div class="mode-selector">
+        <button class="mode-btn active" id="btnDefault" data-mode="default">
+          <span class="mode-icon">&#x26A1;</span>
+          DEFAULT (.mr.)
+        </button>
+        <button class="mode-btn" id="btnCustom" data-mode="custom">
+          <span class="mode-icon">&#x2699;</span>
+          CUSTOM
+        </button>
+      </div>
+      <div class="custom-input-container" id="customInputContainer">
+        <label class="neon-label" for="customPackageName">ENTER NEW PACKAGE NAME:</label>
+        <input
+          type="text"
+          class="neon-input"
+          id="customPackageName"
+          placeholder="com.example.newname"
+          spellcheck="false"
+          autocomplete="off"
+        >
+        <div class="input-hint" id="inputHint"></div>
+      </div>
+    </div>
+
+    <!-- Info Panel (shown after APK is loaded) -->
+    <div class="info-panel hidden" id="infoPanel">
+      <div class="neon-pipe-horizontal short"></div>
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="info-label">ORIGINAL PKG:</span>
+          <span class="info-value" id="originalPkg">-</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">NEW PKG:</span>
+          <span class="info-value highlight" id="newPkg">-</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">OBB FOLDER:</span>
+          <span class="info-value" id="obbStatus">Scanning...</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">FILE:</span>
+          <span class="info-value" id="fileName">-</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Button -->
+    <div class="action-section" id="actionSection">
+      <button class="action-btn disabled" id="btnRename" disabled>
+        <span class="btn-icon">&#x2694;</span>
+        <span class="btn-text">RENAME &amp; SIGN</span>
+        <span class="btn-glow"></span>
+      </button>
+    </div>
+
+    <!-- Progress Section -->
+    <div class="progress-section hidden" id="progressSection">
+      <div class="neon-pipe-horizontal short"></div>
+      <div class="progress-bar-container">
+        <div class="progress-bar" id="progressBar">
+          <div class="progress-fill" id="progressFill"></div>
+          <div class="progress-glow"></div>
+        </div>
+        <span class="progress-percent" id="progressPercent">0%</span>
+      </div>
+      <p class="progress-status" id="progressStatus">Initializing...</p>
+    </div>
+
+    <!-- Result Section -->
+    <div class="result-section hidden" id="resultSection">
+      <div class="result-success hidden" id="resultSuccess">
+        <div class="result-icon">&#x2714;</div>
+        <p class="result-text">PACKAGE RENAMED SUCCESSFULLY</p>
+        <p class="result-detail" id="resultDetail"></p>
+        <p class="result-obb" id="resultObb"></p>
+      </div>
+      <div class="result-error hidden" id="resultError">
+        <div class="result-icon error">&#x2718;</div>
+        <p class="result-text error">RENAME FAILED</p>
+        <p class="result-detail error" id="errorDetail"></p>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <div class="neon-pipe-horizontal"></div>
+      <div class="footer-content">
+        <span class="footer-version" id="footerVersion">v1.0.0</span>
+        <span class="footer-tagline">// SAIL THE DIGITAL SEAS //</span>
+      </div>
+    </footer>
+  </div>
+
+  <script src="scripts/drag-drop.js"></script>
+  <script src="scripts/ui-controller.js"></script>
+  <script src="scripts/progress.js"></script>
+  <script src="scripts/app.js"></script>
+</body>
+</html>

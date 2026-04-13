@@ -1,0 +1,9 @@
+node_modules/
+dist/
+build/
+resources/jre/
+resources/tools/*.jar
+*.log
+.DS_Store
+Thumbs.db
+temp/

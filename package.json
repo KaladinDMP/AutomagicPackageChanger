@@ -1,0 +1,19 @@
+{
+  "name": "automagic-package-changer",
+  "version": "1.0.0",
+  "description": "Cyber-pirate APK package renamer for Quest games",
+  "main": "src/main/main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder",
+    "build:portable": "electron-builder --win portable",
+    "build:installer": "electron-builder --win nsis",
+    "setup-tools": "node scripts/setup-tools.js"
+  },
+  "author": "AutomagicPackageChanger",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^28.1.0",
+    "electron-builder": "^24.9.1"
+  }
+}
