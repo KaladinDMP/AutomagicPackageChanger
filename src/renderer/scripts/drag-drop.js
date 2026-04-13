@@ -49,7 +49,7 @@
     if (files.length === 0) return;
 
     const file = files[0];
-    const filePath = file.path; // Electron adds .path property
+    const filePath = window.api.getPathForFile(file);
 
     if (!filePath) {
       rejectDrop('Could not read file path');

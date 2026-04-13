@@ -1,4 +1,4 @@
-const { contextBridge, ipcRenderer } = require('electron');
+const { contextBridge, ipcRenderer, webUtils } = require('electron');
 
 contextBridge.exposeInMainWorld('api', {
   processApk: (filePath, mode, customTag) =>
@@ -10,6 +10,8 @@ contextBridge.exposeInMainWorld('api', {
   selectFile: () => ipcRenderer.invoke('select-file'),
 
   getVersion: () => ipcRenderer.invoke('get-version'),
+
+  getPathForFile: (file) => webUtils.getPathForFile(file),
 
   onProgress: (callback) => {
     ipcRenderer.on('progress-update', (_event, data) => callback(data));
