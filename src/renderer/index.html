@@ -76,20 +76,25 @@
       <div class="mode-selector">
         <button class="mode-btn active" id="btnDefault" data-mode="default">
           <span class="mode-icon">&#x26A1;</span>
-          DEFAULT (.mr.)
+          DEFAULT (.apc)
+        </button>
+        <button class="mode-btn" id="btnMrfix" data-mode="mrfix">
+          <span class="mode-icon">&#x1F527;</span>
+          MR FIX (.mr)
         </button>
         <button class="mode-btn" id="btnCustom" data-mode="custom">
           <span class="mode-icon">&#x2699;</span>
-          CUSTOM
+          CUSTOM TAG
         </button>
       </div>
       <div class="custom-input-container" id="customInputContainer">
-        <label class="neon-label" for="customPackageName">ENTER NEW PACKAGE NAME:</label>
+        <label class="neon-label" for="customTag">ENTER YOUR TAG (2-3 LETTERS):</label>
         <input
           type="text"
           class="neon-input"
-          id="customPackageName"
-          placeholder="com.example.newname"
+          id="customTag"
+          placeholder="dmp"
+          maxlength="3"
           spellcheck="false"
           autocomplete="off"
         >

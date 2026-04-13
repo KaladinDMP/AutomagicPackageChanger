@@ -28,8 +28,9 @@ Think of it as your **Phunk** / **APKognito** alternative with a cyber-pirate ed
 ## Features
 
 - **Drag & Drop** - Just drop your `.apk` file onto the app. Done.
-- **Default Mode (.mr.)** - One-click rename that inserts `.mr.` into the package name (e.g. `com.game.title` becomes `com.mr.game.title`)
-- **Custom Mode** - Enter any valid package name you want
+- **Default Mode (.apc)** - One-click rename that inserts `.apc` into the package name (e.g. `com.game.title` becomes `com.apc.game.title`)
+- **MR Fix Mode (.mr)** - For MR fixes - inserts `.mr` (e.g. `com.game.title` becomes `com.mr.game.title`)
+- **Custom Tag** - Pick your own 2-3 letter tag (DMP, QG, whatever you want) that gets inserted the same way
 - **Auto OBB Handling** - Detects OBB/data folders sitting next to your APK and renames them to match
 - **Auto Re-Sign** - Every renamed APK is automatically re-signed so it installs cleanly
 - **Self-Contained** - Bundles its own Java runtime, apktool, and signer. No dependencies to install.
@@ -47,8 +48,9 @@ Launch APC and drag your `.apk` file onto the drop zone (or click to browse).
 
 | Mode | What it does | Example |
 |------|-------------|---------|
-| **DEFAULT (.mr.)** | Inserts `.mr.` after the first segment | `com.studio.game` → `com.mr.studio.game` |
-| **CUSTOM** | You type the new package name | `com.studio.game` → `com.whatever.youwant` |
+| **DEFAULT (.apc)** | Inserts `.apc` after the first segment | `com.studio.game` → `com.apc.studio.game` |
+| **MR FIX (.mr)** | Inserts `.mr` for MR fix packages | `com.studio.game` → `com.mr.studio.game` |
+| **CUSTOM TAG** | You choose a 2-3 letter tag | `com.studio.game` → `com.dmp.studio.game` |
 
 ### 3. Hit Rename & Sign
 
@@ -72,12 +74,12 @@ MyGame/
     └── main.1.com.studio.game.obb  ← renames this too
 ```
 
-After rename:
+After rename (default mode):
 ```
 MyGame/
 ├── game_renamed.apk
-└── com.mr.studio.game/
-    └── main.1.com.mr.studio.game.obb
+└── com.apc.studio.game/
+    └── main.1.com.apc.studio.game.obb
 ```
 
 ---
@@ -109,7 +111,7 @@ A: No. APC bundles its own portable Java runtime. Nothing else to install.
 A: Large Quest games (1-4GB) take time to decompile and rebuild. The progress bar keeps you updated. Be patient - it's working.
 
 **Q: Can I rename an already-renamed APK again?**
-A: Yes, but in Default mode APC will warn you if `.mr.` is already in the package name.
+A: Yes, but APC will warn you if the tag is already in the package name.
 
 ---
 

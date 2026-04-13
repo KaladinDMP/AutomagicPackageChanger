@@ -1,8 +1,8 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('api', {
-  processApk: (filePath, mode, customName) =>
-    ipcRenderer.invoke('process-apk', { filePath, mode, customName }),
+  processApk: (filePath, mode, customTag) =>
+    ipcRenderer.invoke('process-apk', { filePath, mode, customTag }),
 
   getPackageName: (filePath) =>
     ipcRenderer.invoke('get-package-name', filePath),
