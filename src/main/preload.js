@@ -11,6 +11,9 @@ contextBridge.exposeInMainWorld('api', {
 
   getVersion: () => ipcRenderer.invoke('get-version'),
 
+  checkObb: (filePath, packageName) =>
+    ipcRenderer.invoke('check-obb', { filePath, packageName }),
+
   getPathForFile: (file) => webUtils.getPathForFile(file),
 
   onProgress: (callback) => {

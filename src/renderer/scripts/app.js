@@ -33,15 +33,14 @@
         return;
       }
 
-      // Check for OBB folder
-      const dir = filePath.substring(0, filePath.lastIndexOf(/[\\/]/.test(filePath) ? filePath.match(/[\\/]/g).pop() : '/'));
-      // Simple heuristic: we'll let the backend handle actual OBB detection
-      // Just show the info panel
+      // Check for OBB folder near the APK
+      const obbCheck = await window.api.checkObb(filePath, packageName);
+
       window.UIController.setApkInfo({
         packageName,
         filePath,
         fileName,
-        obbFound: false // Updated after actual processing
+        obbFound: obbCheck.found
       });
 
     } catch (err) {

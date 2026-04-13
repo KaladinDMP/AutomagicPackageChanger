@@ -78,4 +78,25 @@ function renameObbFiles(obbDir, oldPackageName, newPackageName) {
   }
 }
 
-module.exports = { renameObb };
+/**
+ * Check if an OBB folder exists near the APK without renaming anything.
+ * Used to show status in the info panel before processing.
+ */
+function checkObb(apkDir, packageName) {
+  const searchLocations = [
+    path.join(apkDir, packageName),
+    path.join(apkDir, 'obb', packageName),
+    path.join(path.dirname(apkDir), packageName),
+    path.join(path.dirname(apkDir), 'obb', packageName),
+  ];
+
+  for (const obbDir of searchLocations) {
+    if (fs.existsSync(obbDir) && fs.statSync(obbDir).isDirectory()) {
+      return { found: true, path: obbDir };
+    }
+  }
+
+  return { found: false };
+}
+
+module.exports = { renameObb, checkObb };
