@@ -67,7 +67,7 @@ Your renamed APK appears in the same folder as the original, with `_renamed` app
 
 If your APK sits next to a folder named after the original package (the OBB/data folder), APC finds it and renames it to match. No extra steps needed.
 
-```
+```text
 MyGame/
 ├── game.apk
 └── com.studio.game/          ← APC finds this
@@ -75,7 +75,7 @@ MyGame/
 ```
 
 After rename (default mode):
-```
+```text
 MyGame/
 ├── game_renamed.apk
 └── com.apc.studio.game/
