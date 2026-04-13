@@ -5,7 +5,7 @@
 <h1 align="center">AUTOMAGIC PACKAGE CHANGER</h1>
 
 <p align="center">
-  <strong>Rename Quest game packages with one drop. No fuss. No command lines. Just magic.</strong>
+  <strong>Rename Quest game packages with one drop. No fuss. No command lines. No suffering.</strong>
 </p>
 
 <p align="center">
@@ -19,22 +19,51 @@
 
 ## What is APC?
 
-**Automagic Package Changer (APC)** is a desktop app that renames Android APK package names for Meta Quest games. Drop your APK, pick a rename mode, and APC handles the rest - decompiling, renaming, rebuilding, re-signing, and even renaming matching OBB folders.
+**Automagic Package Changer (APC)** is a desktop app that renames Android APK package names for Meta Quest games.
 
-Think of it as your **Phunk** / **APKognito** alternative with a cyber-pirate edge.
+You drop an APK.  
+You click a button.  
+It does everything you were about to spend 2 hours Googling and messing up.
+
+Decompile. Rename. Rebuild. Re-sign. OBB fix.
+
+All of it.
+
+Think of it as your **Phunk / APKognito alternative** but without the “why is this so annoying” phase.
 
 ---
 
 ## Features
 
-- **Drag & Drop** - Just drop your `.apk` file onto the app. Done.
-- **Default Mode (.apc)** - One-click rename that inserts `.apc` into the package name (e.g. `com.game.title` becomes `com.apc.game.title`)
-- **MR Fix Mode (.mr)** - For MR fixes - inserts `.mr` (e.g. `com.game.title` becomes `com.mr.game.title`)
-- **Custom Tag** - Pick your own 2-3 letter tag (DMP, QG, whatever you want) that gets inserted the same way
-- **Auto OBB Handling** - Detects OBB/data folders sitting next to your APK and renames them to match
-- **Auto Re-Sign** - Every renamed APK is automatically re-signed so it installs cleanly
-- **Self-Contained** - Bundles its own Java runtime, apktool, and signer. No dependencies to install.
-- **Neon Cyber-Pirate UI** - Because renaming packages should look as cool as it feels
+- **Drag & Drop**  
+  Literally drag the file. That’s it. If you can’t do this, we have bigger problems.
+
+- **Default Mode (.apc)**  
+  Inserts `.apc` like it should have always been there  
+  `com.game.title` → `com.apc.game.title`
+
+- **MR Fix Mode (.mr)**  
+  Same idea, different tag  
+  `com.game.title` → `com.mr.game.title`
+
+- **Custom Tag**  
+  Want your own tag? Of course you do  
+  `com.game.title` → `com.dmp.game.title`  
+  Keep it short. This is not a paragraph.
+
+- **Auto OBB Handling**  
+  Finds your OBB folder and fixes it too  
+  No more “why isn’t my game loading” moments
+
+- **Auto Re-Sign**  
+  Because unsigned APKs are about as useful as a brick
+
+- **Self-Contained**  
+  No Java installs. No apktool setup. No nonsense  
+  It just works
+
+- **Neon Cyber-Pirate UI**  
+  If you are going to break things, at least look cool doing it
 
 ---
 
@@ -42,45 +71,61 @@ Think of it as your **Phunk** / **APKognito** alternative with a cyber-pirate ed
 
 ### 1. Drop Your APK
 
-Launch APC and drag your `.apk` file onto the drop zone (or click to browse).
+Launch APC and drag your `.apk` into the drop zone  
+Yes, it really is that simple
+
+---
 
 ### 2. Choose Your Mode
 
 | Mode | What it does | Example |
 |------|-------------|---------|
 | **DEFAULT (.apc)** | Inserts `.apc` after the first segment | `com.studio.game` → `com.apc.studio.game` |
-| **MR FIX (.mr)** | Inserts `.mr` for MR fix packages | `com.studio.game` → `com.mr.studio.game` |
-| **CUSTOM TAG** | You choose a 2-3 letter tag | `com.studio.game` → `com.dmp.studio.game` |
+| **MR FIX (.mr)** | Inserts `.mr` for MR fixes | `com.studio.game` → `com.mr.studio.game` |
+| **CUSTOM TAG** | Your tag, your rules | `com.studio.game` → `com.dmp.studio.game` |
+
+---
 
 ### 3. Hit Rename & Sign
 
 APC will:
-1. Decompile the APK
-2. Rename the package everywhere it matters
-3. Rebuild the APK
-4. Re-sign it with a debug key
-5. Check for and rename any nearby OBB folder
 
-Your renamed APK appears in the same folder as the original, with `_renamed` appended.
+1. Decompile the APK  
+2. Rename everything that actually matters  
+3. Rebuild it  
+4. Re-sign it so your headset doesn’t complain  
+5. Fix any nearby OBB folder automatically  
+
+Your new file shows up next to the original with `_renamed` added
+
+No mystery. No scavenger hunt.
+
+---
 
 ### 4. OBB Auto-Detection
 
-If your APK sits next to a folder named after the original package (the OBB/data folder), APC finds it and renames it to match. No extra steps needed.
+If your APK sits next to its OBB folder, APC finds it and fixes everything
+
+Before:
 
 ```text
 MyGame/
 ├── game.apk
-└── com.studio.game/          ← APC finds this
-    └── main.1.com.studio.game.obb  ← renames this too
+└── com.studio.game/
+└── main.1.com.studio.game.obb
 ```
+
+After:
 
 After rename (default mode):
 ```text
 MyGame/
 ├── game_renamed.apk
 └── com.apc.studio.game/
-    └── main.1.com.apc.studio.game.obb
+└── main.1.com.apc.studio.game.obb
 ```
+
+Yes, it actually does it right.
 
 ---
 
@@ -88,30 +133,44 @@ MyGame/
 
 Grab the latest release from the [Releases](../../releases) page:
 
-- **Portable** (`AutomagicPackageChanger-Portable.exe`) - Single file, no install needed. Just run it.
-- **Installer** (`AutomagicPackageChanger-Setup.exe`) - Traditional installer with Start Menu shortcut.
+- **Portable**  
+  One file. Run it. Done.
+
+- **Installer**  
+  For people who like clicking “Next” a few times
 
 ---
 
 ## FAQ
 
-**Q: Does this work with all Quest games?**
-A: It works with standard APKs. Some games with heavy native code or unusual build configurations may have issues - try it and see.
+**Q: Does this work with all Quest games?**  
+A: Most standard APKs, yes. Some weird ones will fight back. That’s life.
 
-**Q: Will the renamed game work online / with multiplayer?**
-A: Package renaming changes the app's identity on the device. Online features that validate against the package name may not work.
+---
 
-**Q: My antivirus flagged it!**
-A: This is a known false positive with Electron apps and APK signing tools. The app is open source - inspect the code yourself.
+**Q: Will multiplayer still work?**  
+A: Probably not. You changed the package name. The game thinks it’s a different person now.
 
-**Q: Do I need Java installed?**
-A: No. APC bundles its own portable Java runtime. Nothing else to install.
+---
 
-**Q: The rename is taking forever!**
-A: Large Quest games (1-4GB) take time to decompile and rebuild. The progress bar keeps you updated. Be patient - it's working.
+**Q: My antivirus flagged it!**  
+A: Welcome to Electron apps and APK tools. False positives are basically a feature at this point.  
+Check the code if you’re paranoid.
 
-**Q: Can I rename an already-renamed APK again?**
-A: Yes, but APC will warn you if the tag is already in the package name.
+---
+
+**Q: Do I need Java installed?**  
+A: No. We bundled it so you don’t have to deal with that.
+
+---
+
+**Q: It’s taking a while. Is it stuck?**  
+A: No. Big APKs take time. This isn’t magic, it just feels like it.
+
+---
+
+**Q: Can I rename an already renamed APK?**  
+A: Yes. APC will warn you if you’re stacking tags like a maniac.
 
 ---
 
