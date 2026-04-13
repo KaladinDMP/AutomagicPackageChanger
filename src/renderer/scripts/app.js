@@ -55,7 +55,7 @@
   document.getElementById('btnRename').addEventListener('click', async () => {
     const filePath = window.UIController.getFilePath();
     const mode = window.UIController.getMode();
-    const customName = window.UIController.getCustomName();
+    const customTag = window.UIController.getCustomTag();
 
     if (!filePath) return;
 
@@ -65,7 +65,7 @@
     window.ProgressHandler.reset();
 
     try {
-      await window.api.processApk(filePath, mode, customName);
+      await window.api.processApk(filePath, mode, customTag);
     } catch (err) {
       // Error will be handled by the error event listener below
     }

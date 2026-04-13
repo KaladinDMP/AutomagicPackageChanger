@@ -3,7 +3,7 @@ const ApkProcessor = require('./apk-processor');
 const { extractPackageName } = require('./manifest-editor');
 
 function registerIpcHandlers(ipcMain) {
-  ipcMain.handle('process-apk', async (event, { filePath, mode, customName }) => {
+  ipcMain.handle('process-apk', async (event, { filePath, mode, customTag }) => {
     const processor = new ApkProcessor();
 
     processor.on('progress', (data) => {
@@ -19,7 +19,7 @@ function registerIpcHandlers(ipcMain) {
     });
 
     try {
-      const result = await processor.process(filePath, mode, customName);
+      const result = await processor.process(filePath, mode, customTag);
       return result;
     } catch (err) {
       event.sender.send('process-error', { message: err.message, details: err.stack });

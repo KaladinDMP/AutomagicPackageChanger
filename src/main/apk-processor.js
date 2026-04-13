@@ -13,11 +13,11 @@ class ApkProcessor extends EventEmitter {
    * Process an APK: decompile, rename package, rebuild, sign, handle OBB.
    *
    * @param {string} apkPath - Path to the original APK file
-   * @param {string} mode - "default" (adds .mr.) or "custom"
-   * @param {string} customName - Custom package name (only used in custom mode)
+   * @param {string} mode - "default" (.apc), "mrfix" (.mr), or "custom" (user's tag)
+   * @param {string} customTag - Custom 2-3 letter tag (only used in custom mode)
    * @returns {object} Result with output path and package info
    */
-  async process(apkPath, mode, customName) {
+  async process(apkPath, mode, customTag) {
     const tempDir = getTempDir();
     const apkDir = path.dirname(apkPath);
     const apkName = path.basename(apkPath, '.apk');
@@ -33,18 +33,27 @@ class ApkProcessor extends EventEmitter {
       const oldPackageName = await extractPackageName(apkPath);
 
       // Step 2: Compute new package name
+      // All modes insert a short tag after the first segment:
+      //   default: com.game.foo -> com.apc.game.foo
+      //   mrfix:   com.game.foo -> com.mr.game.foo
+      //   custom:  com.game.foo -> com.<tag>.game.foo
       let newPackageName;
-      if (mode === 'default') {
-        // Insert .mr. after the first segment: com.game.foo -> com.mr.game.foo
-        const parts = oldPackageName.split('.');
-        if (parts.length < 2) {
-          throw new Error(`Invalid package name format: ${oldPackageName}`);
-        }
-        parts.splice(1, 0, 'mr');
-        newPackageName = parts.join('.');
-      } else {
-        newPackageName = customName;
+      const parts = oldPackageName.split('.');
+      if (parts.length < 2) {
+        throw new Error(`Invalid package name format: ${oldPackageName}`);
       }
+
+      let tag;
+      if (mode === 'default') {
+        tag = 'apc';
+      } else if (mode === 'mrfix') {
+        tag = 'mr';
+      } else {
+        tag = customTag.toLowerCase();
+      }
+
+      parts.splice(1, 0, tag);
+      newPackageName = parts.join('.');
 
       // Validate new package name
       if (!isValidPackageName(newPackageName)) {
@@ -91,17 +100,10 @@ class ApkProcessor extends EventEmitter {
         percent: 50
       });
 
-      if (mode === 'custom') {
-        // Full deep rename for custom package names
-        const filesChanged = await renameAll(decompDir, oldPackageName, newPackageName);
-        this.emit('progress', {
-          step: 'rename-smali',
-          message: `Updated ${filesChanged} files with new package references`,
-          percent: 60
-        });
-      } else {
-        // For default (.mr.) mode, renameManifestPackage in apktool.yml handles it
-        // We still update XML resources that reference the package name
+      // All modes use the same light-touch rename:
+      // renameManifestPackage in apktool.yml handles the core rename,
+      // and we update XML resources that reference the package name
+      {
         const { walkDir } = require('./file-utils');
         const resDir = path.join(decompDir, 'res');
         if (fs.existsSync(resDir)) {

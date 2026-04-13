@@ -1,15 +1,17 @@
 /**
  * UI Controller
  * Manages mode selection, info panel, and UI state transitions.
+ * Modes: default (.apc), mrfix (.mr), custom (user's 2-3 letter tag)
  */
 (function () {
   'use strict';
 
   // Elements
   const btnDefault = document.getElementById('btnDefault');
+  const btnMrfix = document.getElementById('btnMrfix');
   const btnCustom = document.getElementById('btnCustom');
   const customInputContainer = document.getElementById('customInputContainer');
-  const customPackageName = document.getElementById('customPackageName');
+  const customTag = document.getElementById('customTag');
   const inputHint = document.getElementById('inputHint');
   const infoPanel = document.getElementById('infoPanel');
   const originalPkg = document.getElementById('originalPkg');
@@ -27,17 +29,19 @@
 
   // Mode switching
   btnDefault.addEventListener('click', () => setMode('default'));
+  btnMrfix.addEventListener('click', () => setMode('mrfix'));
   btnCustom.addEventListener('click', () => setMode('custom'));
 
   function setMode(mode) {
     currentMode = mode;
 
     btnDefault.classList.toggle('active', mode === 'default');
+    btnMrfix.classList.toggle('active', mode === 'mrfix');
     btnCustom.classList.toggle('active', mode === 'custom');
 
     if (mode === 'custom') {
       customInputContainer.classList.add('visible');
-      customPackageName.focus();
+      customTag.focus();
     } else {
       customInputContainer.classList.remove('visible');
     }
@@ -46,53 +50,64 @@
     validateState();
   }
 
-  // Custom package name input
-  customPackageName.addEventListener('input', () => {
+  // Custom tag input - force lowercase, letters only
+  customTag.addEventListener('input', () => {
+    customTag.value = customTag.value.toLowerCase().replace(/[^a-z]/g, '');
     updateNewPackagePreview();
-    validateCustomInput();
+    validateCustomTag();
     validateState();
   });
 
-  function validateCustomInput() {
-    const value = customPackageName.value.trim();
+  function validateCustomTag() {
+    const value = customTag.value.trim();
     if (!value) {
       inputHint.textContent = '';
       inputHint.classList.remove('error');
       return false;
     }
 
-    const valid = /^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z][a-zA-Z0-9_]*)+$/.test(value);
-    if (!valid) {
-      inputHint.textContent = 'Must be dot-separated (e.g. com.example.game)';
+    if (value.length < 2) {
+      inputHint.textContent = 'Need at least 2 letters';
       inputHint.classList.add('error');
       return false;
     }
 
-    inputHint.textContent = 'Valid package name';
+    if (!/^[a-z]{2,3}$/.test(value)) {
+      inputHint.textContent = 'Letters only, 2-3 characters';
+      inputHint.classList.add('error');
+      return false;
+    }
+
+    inputHint.textContent = `Tag: .${value}`;
     inputHint.classList.remove('error');
     return true;
+  }
+
+  function getTagForMode() {
+    if (currentMode === 'default') return 'apc';
+    if (currentMode === 'mrfix') return 'mr';
+    return customTag.value.trim().toLowerCase();
   }
 
   function updateNewPackagePreview() {
     if (!currentPackageName) return;
 
-    let newName;
-    if (currentMode === 'default') {
-      const parts = currentPackageName.split('.');
-      parts.splice(1, 0, 'mr');
-      newName = parts.join('.');
-    } else {
-      newName = customPackageName.value.trim() || '...';
+    const tag = getTagForMode();
+    if (!tag) {
+      newPkg.textContent = '...';
+      return;
     }
 
-    newPkg.textContent = newName;
+    const parts = currentPackageName.split('.');
+    parts.splice(1, 0, tag);
+    newPkg.textContent = parts.join('.');
   }
 
   function validateState() {
     let valid = !!currentFilePath && !!currentPackageName;
 
     if (currentMode === 'custom') {
-      valid = valid && validateCustomInput();
+      valid = valid && validateCustomTag();
     }
 
     if (valid) {
@@ -108,7 +123,7 @@
   window.UIController = {
     getMode: () => currentMode,
 
-    getCustomName: () => customPackageName.value.trim(),
+    getCustomTag: () => customTag.value.trim().toLowerCase(),
 
     setApkInfo: (info) => {
       currentPackageName = info.packageName;
