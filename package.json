@@ -15,5 +15,9 @@
   "devDependencies": {
     "electron": "^41.2.0",
     "electron-builder": "^26.8.1"
+  },
+  "overrides": {
+    "rimraf": "^6.0.0",
+    "inflight": "npm:lru-cache@^10.0.0"
   }
 }
