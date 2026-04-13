@@ -10,13 +10,13 @@ win:
     - target: nsis
       arch:
         - x64
-  icon: resources/icon.ico
+  icon: icon.ico
 portable:
   artifactName: AutomagicPackageChanger-Portable.exe
 nsis:
   oneClick: false
   allowToChangeInstallationDirectory: true
-  installerIcon: resources/icon.ico
+  installerIcon: icon.ico
 extraResources:
   - from: resources/tools
     to: tools
