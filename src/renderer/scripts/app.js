@@ -54,7 +54,8 @@
         packageName,
         filePath,
         fileName,
-        obbFound: obbCheck.found
+        obbFound: obbCheck.found,
+        signerIdentity: info.signature && info.signature.identity
       });
 
       if (window.InfoModal) window.InfoModal.setInfo(info);

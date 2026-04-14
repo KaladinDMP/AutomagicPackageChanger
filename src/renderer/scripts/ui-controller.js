@@ -18,6 +18,41 @@
   const newPkg = document.getElementById('newPkg');
   const obbStatus = document.getElementById('obbStatus');
   const fileName = document.getElementById('fileName');
+  const alreadyTaggedBanner = document.getElementById('alreadyTaggedBanner');
+  const atbDetail = document.getElementById('atbDetail');
+
+  // Package segments that indicate the APK has already been tagged by APC
+  // or a sibling tool. Used to raise the proactive warning banner on drop.
+  const KNOWN_TAG_SEGMENTS = ['apc', 'mr', 'dmp', 'mrfix'];
+
+  function detectExistingTag(packageName, signerIdentity) {
+    if (!packageName) return null;
+    const segs = packageName.split('.');
+    // Look at the second segment (our insertion point) and any subsequent matches
+    const tagSegs = segs.filter(s => KNOWN_TAG_SEGMENTS.includes(s.toLowerCase()));
+    if (tagSegs.length > 0) {
+      return { reason: 'package', tag: tagSegs[0] };
+    }
+    if (signerIdentity && signerIdentity.id === 'apc') {
+      return { reason: 'signer', tag: null };
+    }
+    return null;
+  }
+
+  function renderAlreadyTagged(packageName, signerIdentity) {
+    if (!alreadyTaggedBanner) return;
+    const hit = detectExistingTag(packageName, signerIdentity);
+    if (!hit) {
+      alreadyTaggedBanner.classList.add('hidden');
+      return;
+    }
+    if (hit.reason === 'signer') {
+      atbDetail.textContent = 'this APK is already signed by APC — renaming again will stack another tag';
+    } else {
+      atbDetail.textContent = `package contains ".${hit.tag}" — renaming will stack another tag`;
+    }
+    alreadyTaggedBanner.classList.remove('hidden');
+  }
   const btnRename = document.getElementById('btnRename');
   const actionSection = document.getElementById('actionSection');
   const progressSection = document.getElementById('progressSection');
@@ -134,6 +169,8 @@
       obbStatus.textContent = info.obbFound ? 'Found - will be renamed' : 'Not found nearby';
       obbStatus.style.color = info.obbFound ? '#00ff41' : '#666';
 
+      renderAlreadyTagged(info.packageName, info.signerIdentity);
+
       infoPanel.classList.remove('hidden');
       updateNewPackagePreview();
       validateState();
@@ -164,6 +201,7 @@
       currentPackageName = null;
       currentFilePath = null;
       infoPanel.classList.add('hidden');
+      if (alreadyTaggedBanner) alreadyTaggedBanner.classList.add('hidden');
       progressSection.classList.add('hidden');
       resultSection.classList.add('hidden');
       actionSection.style.display = 'flex';

@@ -29,12 +29,52 @@ function loadRegistry() {
 }
 
 /**
- * Match a signer DN (subject and/or issuer combined) against the registry.
+ * Extract a named RDN value out of a DN string. Case-insensitive key match.
+ * Example: extractRdn("CN=Foo, OU=Bar, O=Baz", "O") -> "Baz"
+ */
+function extractRdn(dn, key) {
+  if (!dn) return null;
+  const re = new RegExp('(?:^|,)\\s*' + key + '\\s*=\\s*([^,]+)', 'i');
+  const m = dn.match(re);
+  return m ? m[1].trim() : null;
+}
+
+/**
+ * Pull the CN value out of a DN string like "CN=Foo, OU=Bar, O=Baz".
+ */
+function extractCN(dn) {
+  return extractRdn(dn, 'CN');
+}
+
+/**
+ * Build a lookup string from CN + O + also raw CN=/O= fragments so registry
+ * entries can match either by value or by a `CN=...` / `O=...` literal.
+ *
+ * IMPORTANT: We deliberately EXCLUDE OU and L fields. OU is user-configurable
+ * signature text ("DMP used Automagic on this APK!") and L carries our lineage
+ * breadcrumb ("Previously signed by NothingIsFree (NIF)"). Matching those
+ * would cause false positives — e.g. APC's own cert would match NIF because
+ * "NothingIsFree" is in the L= lineage line.
+ */
+function buildIdentityHaystack(dn) {
+  if (!dn) return '';
+  const cn = extractRdn(dn, 'CN') || '';
+  const o  = extractRdn(dn, 'O')  || '';
+  const parts = [];
+  if (cn) { parts.push(cn); parts.push('CN=' + cn); }
+  if (o)  { parts.push(o);  parts.push('O=' + o);  }
+  return parts.join(' ').toLowerCase();
+}
+
+/**
+ * Match a signer DN (subject and/or issuer) against the registry.
  * Returns the matched signer record or null.
+ *
+ * Only CN and O fields participate in matching — see buildIdentityHaystack.
  */
 function identifySigner({ subject, issuer }) {
-  const haystack = ((subject || '') + ' ' + (issuer || '')).toLowerCase();
-  if (!haystack.trim()) return null;
+  const haystack = (buildIdentityHaystack(subject) + ' ' + buildIdentityHaystack(issuer)).trim();
+  if (!haystack) return null;
 
   const registry = loadRegistry();
   for (const entry of registry) {
@@ -45,15 +85,6 @@ function identifySigner({ subject, issuer }) {
     }
   }
   return null;
-}
-
-/**
- * Pull the CN value out of a DN string like "CN=Foo, OU=Bar, O=Baz".
- */
-function extractCN(dn) {
-  if (!dn) return null;
-  const m = dn.match(/CN=([^,]+)/i);
-  return m ? m[1].trim() : null;
 }
 
 module.exports = { identifySigner, extractCN, loadRegistry };

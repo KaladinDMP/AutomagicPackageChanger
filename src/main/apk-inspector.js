@@ -218,10 +218,20 @@ async function inspectSignature(apkPath) {
   ], 60000);
   const out = (stdout + '\n' + stderr);
 
-  // Scheme verification lines
-  if (/v1\s*scheme.*:\s*true/i.test(out)) result.schemes.v1 = true;
-  if (/v2\s*scheme.*:\s*true/i.test(out)) result.schemes.v2 = true;
-  if (/v3\s*scheme.*:\s*true/i.test(out)) result.schemes.v3 = true;
+  // Scheme verification lines. uber-apk-signer has used several formats across
+  // versions, so we match permissively. Examples we've seen:
+  //   "v1 scheme: true"
+  //   "signed by v1 scheme: true"
+  //   "APK Signature Scheme v2: true"
+  //   "scheme v3: true"
+  //   "v2 (APK Signature Scheme v2): true"
+  const schemeRe = (n) => new RegExp(
+    '(?:scheme\\s*v' + n + '|v' + n + '\\s*\\(?\\s*(?:apk\\s*)?(?:signature\\s*)?scheme|v' + n + '\\s*scheme|v' + n + ')\\s*\\)?[^\\n]*?[:\\-]\\s*(true|verified|success)',
+    'i'
+  );
+  if (schemeRe(1).test(out)) result.schemes.v1 = true;
+  if (schemeRe(2).test(out)) result.schemes.v2 = true;
+  if (schemeRe(3).test(out)) result.schemes.v3 = true;
 
   // Per-signer certificate blocks
   // Typical uber-apk-signer --verbose block includes:
@@ -243,6 +253,19 @@ async function inspectSignature(apkPath) {
 
   result.signed = result.signers.length > 0 ||
                   result.schemes.v1 || result.schemes.v2 || result.schemes.v3;
+
+  // If uber-apk-signer produced per-signer cert blocks but the scheme regex
+  // didn't pick anything up (output format drift), infer schemes from the
+  // overall verdict: a cert exists → at least v1 was verified. v2/v3 presence
+  // is detected from block text if available.
+  if (result.signed && !result.schemes.v1 && !result.schemes.v2 && !result.schemes.v3) {
+    // Check for any positive verification wording
+    if (/verified\s*:\s*true/i.test(out) || /signature\s+is\s+valid/i.test(out) || result.signers.length > 0) {
+      result.schemes.v1 = true;
+      if (/scheme\s*v2|v2\s*signature/i.test(out)) result.schemes.v2 = true;
+      if (/scheme\s*v3|v3\s*signature/i.test(out)) result.schemes.v3 = true;
+    }
+  }
 
   // Identify first signer against the registry
   if (result.signers.length > 0) {
