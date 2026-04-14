@@ -50,15 +50,43 @@
     }
   });
 
-  // Rename button
-  document.getElementById('btnRename').addEventListener('click', async () => {
-    const filePath = window.UIController.getFilePath();
-    const mode = window.UIController.getMode();
-    const customTag = window.UIController.getCustomTag();
+  // Warning modal elements
+  const warnModal = document.getElementById('warnModal');
+  const warnCurrentPkg = document.getElementById('warnCurrentPkg');
+  const warnTag = document.getElementById('warnTag');
+  const warnNewPkg = document.getElementById('warnNewPkg');
+  const warnCancel = document.getElementById('warnCancel');
+  const warnConfirm = document.getElementById('warnConfirm');
 
-    if (!filePath) return;
+  function resolveTag(mode, customTag) {
+    if (mode === 'default') return 'apc';
+    if (mode === 'mrfix') return 'mr';
+    return (customTag || '').toLowerCase();
+  }
 
-    // Switch to processing state
+  function computeNewPackage(packageName, tag) {
+    const parts = packageName.split('.');
+    parts.splice(1, 0, tag);
+    return parts.join('.');
+  }
+
+  function packageAlreadyTagged(packageName, tag) {
+    if (!packageName || !tag) return false;
+    return packageName.split('.').includes(tag);
+  }
+
+  function hideWarnModal() {
+    warnModal.classList.add('hidden');
+  }
+
+  function showWarnModal(packageName, tag) {
+    warnCurrentPkg.textContent = packageName;
+    warnTag.textContent = '.' + tag;
+    warnNewPkg.textContent = computeNewPackage(packageName, tag);
+    warnModal.classList.remove('hidden');
+  }
+
+  async function startRename(filePath, mode, customTag) {
     window.UIController.showProcessing();
     window.DragDrop.setProcessing(true);
     window.ProgressHandler.reset();
@@ -68,6 +96,48 @@
     } catch (err) {
       // Error will be handled by the error event listener below
     }
+  }
+
+  // Rename button
+  document.getElementById('btnRename').addEventListener('click', () => {
+    const filePath = window.UIController.getFilePath();
+    const mode = window.UIController.getMode();
+    const customTag = window.UIController.getCustomTag();
+    const packageName = window.UIController.getPackageName();
+
+    if (!filePath) return;
+
+    const tag = resolveTag(mode, customTag);
+
+    if (packageAlreadyTagged(packageName, tag)) {
+      showWarnModal(packageName, tag);
+      return;
+    }
+
+    startRename(filePath, mode, customTag);
+  });
+
+  // Modal button handlers
+  warnCancel.addEventListener('click', hideWarnModal);
+
+  warnConfirm.addEventListener('click', () => {
+    hideWarnModal();
+    const filePath = window.UIController.getFilePath();
+    const mode = window.UIController.getMode();
+    const customTag = window.UIController.getCustomTag();
+    if (!filePath) return;
+    startRename(filePath, mode, customTag);
+  });
+
+  // ESC key and backdrop click dismiss (treated as cancel)
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !warnModal.classList.contains('hidden')) {
+      hideWarnModal();
+    }
+  });
+
+  warnModal.addEventListener('click', (e) => {
+    if (e.target === warnModal) hideWarnModal();
   });
 
   // Progress updates from main process

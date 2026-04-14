@@ -141,6 +141,8 @@
 
     getFilePath: () => currentFilePath,
 
+    getPackageName: () => currentPackageName,
+
     showProcessing: () => {
       actionSection.style.display = 'none';
       resultSection.classList.add('hidden');

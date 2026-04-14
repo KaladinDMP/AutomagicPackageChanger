@@ -172,6 +172,43 @@
     </footer>
   </div>
 
+  <!-- Warning Modal: already-tagged APK -->
+  <div class="modal-overlay hidden" id="warnModal" role="dialog" aria-modal="true" aria-labelledby="warnModalTitle">
+    <div class="modal-box warn">
+      <div class="modal-corners">
+        <span class="corner tl"></span>
+        <span class="corner tr"></span>
+        <span class="corner bl"></span>
+        <span class="corner br"></span>
+      </div>
+      <div class="modal-icon">&#x26A0;</div>
+      <h2 class="modal-title" id="warnModalTitle">ALREADY TAGGED</h2>
+      <p class="modal-subtitle">This APK appears to have been renamed before.</p>
+      <div class="modal-info">
+        <div class="modal-info-row">
+          <span class="modal-info-label">CURRENT PKG</span>
+          <span class="modal-info-value" id="warnCurrentPkg">-</span>
+        </div>
+        <div class="modal-info-row">
+          <span class="modal-info-label">DETECTED TAG</span>
+          <span class="modal-info-value warn-tag" id="warnTag">-</span>
+        </div>
+        <div class="modal-info-row">
+          <span class="modal-info-label">RESULT PKG</span>
+          <span class="modal-info-value" id="warnNewPkg">-</span>
+        </div>
+      </div>
+      <p class="modal-message">
+        Renaming again will stack another tag onto the package name.
+        You can continue if that is what you want.
+      </p>
+      <div class="modal-actions">
+        <button class="modal-btn cancel" id="warnCancel">CANCEL</button>
+        <button class="modal-btn confirm" id="warnConfirm">CONTINUE ANYWAY</button>
+      </div>
+    </div>
+  </div>
+
   <script src="scripts/drag-drop.js"></script>
   <script src="scripts/ui-controller.js"></script>
   <script src="scripts/progress.js"></script>
