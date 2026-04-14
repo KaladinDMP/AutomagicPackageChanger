@@ -73,6 +73,20 @@ body {
   text-shadow: 0 0 5px rgba(0, 255, 65, 0.5);
 }
 
+.title-bar-version {
+  margin-left: 10px;
+  padding: 2px 8px;
+  font-family: 'Share Tech Mono', 'Consolas', monospace;
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: #d400ff;
+  border: 1px solid #d400ff;
+  background: rgba(212, 0, 255, 0.1);
+  text-shadow: 0 0 6px rgba(212, 0, 255, 0.8);
+  box-shadow: 0 0 6px rgba(212, 0, 255, 0.5), inset 0 0 6px rgba(212, 0, 255, 0.15);
+  font-weight: 700;
+}
+
 .title-bar-controls {
   display: flex;
   gap: 2px;
@@ -571,8 +585,12 @@ body {
 }
 
 .footer-version {
-  font-size: 10px;
-  color: #444;
+  font-family: 'Share Tech Mono', 'Consolas', monospace;
+  font-size: 12px;
+  color: #d400ff;
+  letter-spacing: 2px;
+  text-shadow: 0 0 6px rgba(212, 0, 255, 0.7);
+  font-weight: 700;
 }
 
 .footer-tagline {
@@ -822,4 +840,319 @@ body {
   50% { opacity: 0.6; }
   52% { opacity: 0.2; }
   54% { opacity: 0.5; }
+}
+
+/* ---------- APK Info button + signer badge ---------- */
+.signer-badge {
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.info-more-btn {
+  margin-top: 14px;
+  width: 100%;
+  padding: 10px;
+  background: transparent;
+  border: 2px solid #39ff14;
+  color: #39ff14;
+  font-family: 'Orbitron', 'Rajdhani', sans-serif;
+  font-size: 12px;
+  letter-spacing: 3px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-transform: uppercase;
+  text-shadow: 0 0 4px rgba(57, 255, 20, 0.6);
+}
+.info-more-btn:hover:not(:disabled) {
+  background: rgba(57, 255, 20, 0.12);
+  box-shadow: 0 0 14px rgba(57, 255, 20, 0.7);
+}
+.info-more-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  border-color: #555;
+  color: #555;
+  text-shadow: none;
+}
+
+/* ---------- Info / Settings modal variants ---------- */
+.modal-box.info,
+.modal-box.settings {
+  width: min(680px, 94vw);
+  max-height: 88vh;
+  overflow-y: auto;
+  border-color: #39ff14;
+  box-shadow:
+    0 0 24px #39ff14,
+    0 0 60px rgba(57, 255, 20, 0.45),
+    inset 0 0 24px rgba(57, 255, 20, 0.1);
+  text-align: left;
+  padding: 30px 34px 24px;
+}
+.modal-box.settings {
+  border-color: #d400ff;
+  box-shadow:
+    0 0 22px #d400ff,
+    0 0 50px rgba(212, 0, 255, 0.45),
+    inset 0 0 24px rgba(212, 0, 255, 0.1);
+}
+.modal-box.info .modal-corners .corner,
+.modal-box.settings .modal-corners .corner {
+  border-color: inherit;
+}
+.modal-box.info .modal-corners .corner {
+  border-color: #39ff14;
+  box-shadow: 0 0 8px #39ff14;
+}
+.modal-box.settings .modal-corners .corner {
+  border-color: #d400ff;
+  box-shadow: 0 0 8px #d400ff;
+}
+
+.modal-title.info {
+  color: #39ff14;
+  text-shadow:
+    0 0 6px #39ff14,
+    0 0 14px #39ff14,
+    0 0 28px rgba(57, 255, 20, 0.6);
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 14px;
+  font-family: 'Orbitron', 'Rajdhani', sans-serif;
+  font-size: 26px;
+  letter-spacing: 6px;
+  font-weight: 900;
+}
+.modal-title.settings {
+  color: #e88cff;
+  text-shadow:
+    0 0 6px #d400ff,
+    0 0 14px #d400ff,
+    0 0 28px rgba(212, 0, 255, 0.6);
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 18px;
+  font-family: 'Orbitron', 'Rajdhani', sans-serif;
+  font-size: 26px;
+  letter-spacing: 6px;
+  font-weight: 900;
+}
+
+.modal-close {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  width: 30px;
+  height: 30px;
+  background: transparent;
+  border: 1px solid currentColor;
+  color: #ff4569;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  transition: all 0.15s;
+}
+.modal-close:hover {
+  background: rgba(255, 69, 105, 0.15);
+  box-shadow: 0 0 10px #ff4569;
+}
+
+/* Signer ribbon at top of info modal */
+.modal-signer-ribbon {
+  --signer-color: #39ff14;
+  margin: 6px 0 20px;
+  padding: 10px 14px;
+  border: 2px solid var(--signer-color);
+  background: rgba(57, 255, 20, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  box-shadow: 0 0 16px rgba(57, 255, 20, 0.35);
+}
+.modal-signer-ribbon.unknown {
+  background: rgba(255, 179, 0, 0.08);
+  box-shadow: 0 0 16px rgba(255, 179, 0, 0.35);
+}
+.modal-signer-ribbon .ribbon-label {
+  font-family: 'Orbitron', 'Rajdhani', sans-serif;
+  font-size: 11px;
+  letter-spacing: 4px;
+  color: #aaa;
+}
+.modal-signer-ribbon .ribbon-name {
+  font-family: 'Orbitron', 'Rajdhani', sans-serif;
+  font-size: 22px;
+  letter-spacing: 5px;
+  font-weight: 900;
+  color: var(--signer-color);
+  text-shadow:
+    0 0 6px var(--signer-color),
+    0 0 14px var(--signer-color);
+}
+
+/* Info sections */
+.info-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.info-section {
+  padding: 12px 14px;
+  background: rgba(57, 255, 20, 0.04);
+  border: 1px solid rgba(57, 255, 20, 0.3);
+}
+.info-section-title {
+  margin: 0 0 10px;
+  font-family: 'Orbitron', 'Rajdhani', sans-serif;
+  font-size: 12px;
+  letter-spacing: 4px;
+  color: #39ff14;
+  text-shadow: 0 0 6px rgba(57, 255, 20, 0.7);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.info-count {
+  background: rgba(57, 255, 20, 0.18);
+  padding: 2px 8px;
+  font-size: 11px;
+  letter-spacing: 1px;
+  border: 1px solid rgba(57, 255, 20, 0.4);
+}
+.expand-toggle {
+  margin-left: auto;
+  background: transparent;
+  border: 1px solid rgba(57, 255, 20, 0.5);
+  color: #39ff14;
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+  font-size: 10px;
+  line-height: 1;
+  transition: transform 0.2s;
+}
+.expand-toggle.expanded { transform: rotate(180deg); }
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 4px 0;
+  border-bottom: 1px dashed rgba(57, 255, 20, 0.18);
+  font-family: 'Share Tech Mono', 'Consolas', monospace;
+  font-size: 13px;
+}
+.info-row:last-child { border-bottom: none; }
+.info-row > span:first-child {
+  color: #7fe09a;
+  letter-spacing: 2px;
+  flex-shrink: 0;
+  min-width: 110px;
+}
+.info-row > span:last-child {
+  color: #fff;
+  text-align: right;
+  word-break: break-word;
+}
+.info-row .wrap { word-break: break-all; text-align: right; }
+.info-row .mono { font-family: 'Share Tech Mono', 'Consolas', monospace; font-size: 11px; color: #9dffb3; }
+.info-row .copyable { cursor: pointer; transition: color 0.15s; }
+.info-row .copyable:hover { color: #fff; text-shadow: 0 0 6px #39ff14; }
+
+.info-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 200px;
+  overflow-y: auto;
+  font-family: 'Share Tech Mono', 'Consolas', monospace;
+  font-size: 12px;
+  color: #cfe;
+}
+.info-list li {
+  padding: 3px 6px;
+  border-bottom: 1px dashed rgba(57, 255, 20, 0.1);
+}
+.info-list.collapsed { display: none; }
+
+/* Settings radios */
+.settings-hint {
+  font-size: 12px;
+  color: #cfa0e0;
+  margin: 0 0 14px;
+  line-height: 1.5;
+}
+.radio-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  margin: 6px 0;
+  border: 1px solid rgba(212, 0, 255, 0.3);
+  background: rgba(212, 0, 255, 0.04);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.radio-row:hover {
+  background: rgba(212, 0, 255, 0.1);
+  border-color: rgba(212, 0, 255, 0.6);
+}
+.radio-row input[type="radio"] {
+  margin-top: 2px;
+  accent-color: #d400ff;
+}
+.radio-label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+.radio-label strong {
+  font-family: 'Orbitron', 'Rajdhani', sans-serif;
+  font-size: 12px;
+  letter-spacing: 3px;
+  color: #e88cff;
+  text-shadow: 0 0 4px rgba(212, 0, 255, 0.6);
+}
+.radio-preview {
+  font-family: 'Share Tech Mono', 'Consolas', monospace;
+  font-size: 12px;
+  color: #fff;
+  opacity: 0.85;
+}
+.neon-input.full {
+  width: 100%;
+  margin-top: 4px;
+}
+
+.modal-actions.single {
+  justify-content: center;
+}
+.modal-btn.confirm-green {
+  border-color: #39ff14;
+  color: #39ff14;
+  text-shadow: 0 0 4px rgba(57, 255, 20, 0.7);
+}
+.modal-btn.confirm-green:hover {
+  background: rgba(57, 255, 20, 0.18);
+  color: #fff;
+  box-shadow:
+    0 0 14px #39ff14,
+    0 0 28px rgba(57, 255, 20, 0.6);
+}
+
+/* Settings gear in title bar */
+.title-btn.settings { color: #d400ff; }
+.title-btn.settings:hover { background: rgba(212, 0, 255, 0.18); color: #fff; }
+
+/* In the settings modal, scope section theming to purple */
+.modal-box.settings .info-section {
+  background: rgba(212, 0, 255, 0.04);
+  border-color: rgba(212, 0, 255, 0.3);
+}
+.modal-box.settings .info-section-title {
+  color: #e88cff;
+  text-shadow: 0 0 6px rgba(212, 0, 255, 0.7);
 }

@@ -10,9 +10,14 @@
   document.getElementById('btnMaximize').addEventListener('click', () => window.api.maximize());
   document.getElementById('btnClose').addEventListener('click', () => window.api.close());
 
-  // Set version in footer
+  // Set version in footer + title bar badge (visible in every screenshot)
   window.api.getVersion().then(version => {
-    document.getElementById('footerVersion').textContent = 'v' + version;
+    const v = 'v' + version;
+    const footer = document.getElementById('footerVersion');
+    const titleBadge = document.getElementById('titleBarVersion');
+    if (footer) footer.textContent = v;
+    if (titleBadge) titleBadge.textContent = v;
+    document.title = `AutomagicPackageChanger ${v}`;
   });
 
   // Handle APK drop
@@ -22,16 +27,25 @@
     // Reset previous state
     window.ProgressHandler.reset();
     window.UIController.reset();
+    if (window.InfoModal) {
+      window.InfoModal.reset();
+      window.InfoModal.setScanning();
+    }
     window.DragDrop.setFileLoaded(fileName);
 
-    // Get package name from APK
+    // One-shot full inspection — pulls package, SDK, signer identity, hashes, etc.
+    // Replaces the old getPackageName call (which did a decompile anyway) so
+    // auto-scan adds zero extra time.
     try {
-      const packageName = await window.api.getPackageName(filePath);
+      const info = await window.api.inspectApk(filePath);
 
-      if (packageName && packageName.error) {
-        window.ProgressHandler.showError({ message: packageName.error });
+      if (info && info.error) {
+        window.ProgressHandler.showError({ message: info.error });
+        if (window.InfoModal) window.InfoModal.setInfo({ error: info.error });
         return;
       }
+
+      const packageName = info.packageName;
 
       // Check for OBB folder near the APK
       const obbCheck = await window.api.checkObb(filePath, packageName);
@@ -43,10 +57,13 @@
         obbFound: obbCheck.found
       });
 
+      if (window.InfoModal) window.InfoModal.setInfo(info);
+
     } catch (err) {
       window.ProgressHandler.showError({
         message: 'Failed to read APK: ' + (err.message || err)
       });
+      if (window.InfoModal) window.InfoModal.setInfo({ error: err.message || String(err) });
     }
   });
 

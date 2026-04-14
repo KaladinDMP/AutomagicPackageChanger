@@ -1,0 +1,47 @@
+{
+  "_comment": "Known APK signer identities. Detection matches any 'dnContains' substring (case-insensitive) against the signer's Subject or Issuer DN. Order matters — first match wins.",
+  "signers": [
+    {
+      "id": "vrp",
+      "label": "VRP",
+      "fullName": "NotQuestUnderground",
+      "color": "#39ff14",
+      "dnContains": ["NotQuestUnderground"]
+    },
+    {
+      "id": "nif",
+      "label": "NIF",
+      "fullName": "NothingIsFree",
+      "color": "#39ff14",
+      "dnContains": ["NothingIsFree"]
+    },
+    {
+      "id": "apc",
+      "label": "APC",
+      "fullName": "Automagic Package Changer",
+      "color": "#d400ff",
+      "dnContains": ["Automagic Package Changer", "Automagic"]
+    },
+    {
+      "id": "meta",
+      "label": "Meta / Oculus",
+      "fullName": "Oculus VR, LLC",
+      "color": "#00d4ff",
+      "dnContains": ["Oculus VR", "Facebook Technologies", "Meta Platforms"]
+    },
+    {
+      "id": "google",
+      "label": "Google",
+      "fullName": "Google / Android",
+      "color": "#00d4ff",
+      "dnContains": ["CN=Android", "O=Google Inc."]
+    },
+    {
+      "id": "debug",
+      "label": "Debug Key",
+      "fullName": "Android Debug",
+      "color": "#888888",
+      "dnContains": ["CN=Android Debug", "O=Android"]
+    }
+  ]
+}

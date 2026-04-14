@@ -14,6 +14,13 @@ contextBridge.exposeInMainWorld('api', {
   checkObb: (filePath, packageName) =>
     ipcRenderer.invoke('check-obb', { filePath, packageName }),
 
+  inspectApk: (filePath) => ipcRenderer.invoke('inspect-apk', filePath),
+
+  getSettings: () => ipcRenderer.invoke('get-settings'),
+  saveSettings: (partial) => ipcRenderer.invoke('save-settings', partial),
+
+  openLog: () => ipcRenderer.invoke('open-log'),
+
   getPathForFile: (file) => webUtils.getPathForFile(file),
 
   onProgress: (callback) => {

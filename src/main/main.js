@@ -1,6 +1,7 @@
-const { app, BrowserWindow, ipcMain, dialog } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, shell } = require('electron');
 const path = require('path');
 const { registerIpcHandlers } = require('./ipc-handlers');
+const logger = require('./logger');
 
 let mainWindow;
 
@@ -31,6 +32,7 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
+  logger.init();
   createWindow();
   registerIpcHandlers(ipcMain);
 
@@ -40,6 +42,9 @@ app.whenReady().then(() => {
     }
   });
 });
+
+process.on('uncaughtException', (err) => logger.error('uncaughtException', err));
+process.on('unhandledRejection', (err) => logger.error('unhandledRejection', err));
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
@@ -71,4 +76,11 @@ ipcMain.handle('select-file', async () => {
   });
   if (result.canceled) return null;
   return result.filePaths[0];
+});
+
+ipcMain.handle('open-log', () => {
+  const p = logger.getLogPath();
+  logger.log('Opening log file at', p);
+  shell.showItemInFolder(p);
+  return p;
 });
