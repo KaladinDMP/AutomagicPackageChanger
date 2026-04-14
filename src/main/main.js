@@ -5,12 +5,18 @@ const logger = require('./logger');
 
 let mainWindow;
 
+// Global UI scale. Applied via webContents.setZoomFactor so the entire page
+// (title bar, content, modals) rescales cleanly. 0.78 shrinks the UI ~22%
+// from the original design so the full app fits inside a default window on
+// a 1080p screen without forcing the user to resize.
+const APP_ZOOM_FACTOR = 0.78;
+
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 900,
-    height: 680,
-    minWidth: 750,
-    minHeight: 580,
+    width: 820,
+    height: 760,
+    minWidth: 640,
+    minHeight: 520,
     backgroundColor: '#0d0221',
     icon: path.join(__dirname, '../../icon.png'),
     frame: false,
@@ -19,8 +25,16 @@ function createWindow() {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
       nodeIntegration: false,
-      sandbox: false
+      sandbox: false,
+      zoomFactor: APP_ZOOM_FACTOR
     }
+  });
+
+  // Belt-and-suspenders: enforce the zoom factor after the page loads too.
+  // Chromium occasionally resets zoom on reload or when the page completes
+  // first paint, so re-apply on did-finish-load.
+  mainWindow.webContents.on('did-finish-load', () => {
+    mainWindow.webContents.setZoomFactor(APP_ZOOM_FACTOR);
   });
 
   mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'));

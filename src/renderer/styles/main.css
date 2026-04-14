@@ -117,15 +117,18 @@ body {
   color: #ff4444;
 }
 
-/* App Container */
+/* App Container
+   NOTE: global UI scale is applied via webContents.setZoomFactor in main.js
+   (see APP_ZOOM_FACTOR). Layout paddings/gaps here are already tightened
+   to give comfortable spacing at that zoom, but NOT zoom-dependent. */
 .app-container {
   height: calc(100vh - 32px);
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 16px 24px;
+  padding: 12px 20px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
   background:
     radial-gradient(ellipse at 20% 50%, rgba(138, 43, 226, 0.08) 0%, transparent 50%),
     radial-gradient(ellipse at 80% 20%, rgba(0, 255, 65, 0.04) 0%, transparent 50%),
@@ -154,7 +157,7 @@ body {
 /* Header */
 .app-header {
   text-align: center;
-  padding: 8px 0;
+  padding: 4px 0;
 }
 
 .logo-container {
