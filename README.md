@@ -108,19 +108,22 @@ If your APK sits next to its OBB folder, APC finds it and fixes everything
 
 Before:
 
+```text
 MyGame/
 ├── game.apk
 └── com.studio.game/
 └── main.1.com.studio.game.obb
-
+```
 
 After:
 
+After rename (default mode):
+```text
 MyGame/
 ├── game_renamed.apk
 └── com.apc.studio.game/
 └── main.1.com.apc.studio.game.obb
-
+```
 
 Yes, it actually does it right.
 
