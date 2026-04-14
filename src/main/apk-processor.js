@@ -7,6 +7,10 @@ const { extractPackageName, updateManifest, updateApktoolYml } = require('./mani
 const { renameAll } = require('./smali-renamer');
 const { renameObb } = require('./obb-handler');
 const { getTempDir, cleanupDir, copyFile } = require('./file-utils');
+const { inspectSignature } = require('./apk-inspector');
+const { getOrCreateKeystore } = require('./keystore-manager');
+const { resolveSignatureText } = require('./settings');
+const logger = require('./logger');
 
 class ApkProcessor extends EventEmitter {
   /**
@@ -131,14 +135,34 @@ class ApkProcessor extends EventEmitter {
       const rebuiltApk = path.join(tempDir, 'rebuilt.apk');
       await rebuild(decompDir, rebuiltApk);
 
-      // Step 7: Sign APK
+      // Step 7: Sign APK (with APC-branded keystore)
       this.emit('progress', {
         step: 'sign',
-        message: 'Signing APK...',
-        percent: 80
+        message: 'Identifying original signer...',
+        percent: 78
       });
 
-      await sign(rebuiltApk);
+      // Detect the original signer so we can embed lineage in our new cert
+      let previousIdentity = null;
+      try {
+        const origSig = await inspectSignature(apkPath);
+        if (origSig && origSig.identity) previousIdentity = origSig.identity;
+        logger.log('[apk-processor] detected previous signer:', previousIdentity && previousIdentity.label);
+      } catch (e) {
+        logger.warn('[apk-processor] signer detection failed (non-fatal)', e);
+      }
+
+      const signatureText = resolveSignatureText(tag);
+      const keystore = await getOrCreateKeystore({ signatureText, previousIdentity });
+      logger.log('[apk-processor] signing with keystore DN:', keystore.dn);
+
+      this.emit('progress', {
+        step: 'sign',
+        message: 'Signing APK with APC identity...',
+        percent: 82
+      });
+
+      await sign(rebuiltApk, keystore);
 
       // Step 8: Handle OBB folder
       this.emit('progress', {

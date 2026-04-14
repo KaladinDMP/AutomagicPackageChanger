@@ -18,8 +18,10 @@
     <div class="title-bar-drag">
       <span class="title-bar-icon">&#x2620;</span>
       <span class="title-bar-text">AUTOMAGIC PACKAGE CHANGER</span>
+      <span class="title-bar-version" id="titleBarVersion">v0.0.0</span>
     </div>
     <div class="title-bar-controls">
+      <button class="title-btn settings" id="btnSettings" title="Settings">&#x2699;</button>
       <button class="title-btn minimize" id="btnMinimize" title="Minimize">&#x2015;</button>
       <button class="title-btn maximize" id="btnMaximize" title="Maximize">&#x25A1;</button>
       <button class="title-btn close" id="btnClose" title="Close">&#x2715;</button>
@@ -119,10 +121,17 @@
           <span class="info-value" id="obbStatus">Scanning...</span>
         </div>
         <div class="info-item">
+          <span class="info-label">SIGNED BY:</span>
+          <span class="info-value signer-badge" id="signerBadge">Scanning...</span>
+        </div>
+        <div class="info-item">
           <span class="info-label">FILE:</span>
           <span class="info-value" id="fileName">-</span>
         </div>
       </div>
+      <button class="info-more-btn" id="btnInfoMore" disabled>
+        <span>&#x1F50D;</span> APK INFO
+      </button>
     </div>
 
     <!-- Action Button -->
@@ -209,9 +218,128 @@
     </div>
   </div>
 
+  <!-- APK Info Modal -->
+  <div class="modal-overlay hidden" id="infoModal" role="dialog" aria-modal="true" aria-labelledby="infoModalTitle">
+    <div class="modal-box info">
+      <div class="modal-corners">
+        <span class="corner tl"></span>
+        <span class="corner tr"></span>
+        <span class="corner bl"></span>
+        <span class="corner br"></span>
+      </div>
+      <button class="modal-close" id="infoClose" aria-label="Close">&#x2715;</button>
+      <h2 class="modal-title info" id="infoModalTitle">APK INFO</h2>
+      <div class="modal-signer-ribbon" id="infoSignerRibbon">
+        <span class="ribbon-label">SIGNED BY</span>
+        <span class="ribbon-name" id="infoSignerName">-</span>
+      </div>
+
+      <div class="info-sections">
+        <section class="info-section">
+          <h3 class="info-section-title">APPLICATION</h3>
+          <div class="info-row"><span>Label</span><span id="infoAppLabel">-</span></div>
+          <div class="info-row"><span>Package</span><span id="infoPackage">-</span></div>
+          <div class="info-row"><span>Version</span><span id="infoVersion">-</span></div>
+        </section>
+
+        <section class="info-section">
+          <h3 class="info-section-title">PLATFORM</h3>
+          <div class="info-row"><span>Min SDK</span><span id="infoMinSdk">-</span></div>
+          <div class="info-row"><span>Target SDK</span><span id="infoTargetSdk">-</span></div>
+          <div class="info-row"><span>Compile SDK</span><span id="infoCompileSdk">-</span></div>
+          <div class="info-row"><span>OpenGL ES</span><span id="infoGles">-</span></div>
+          <div class="info-row"><span>ABIs</span><span id="infoAbis">-</span></div>
+        </section>
+
+        <section class="info-section">
+          <h3 class="info-section-title">SIGNATURE</h3>
+          <div class="info-row"><span>Schemes</span><span id="infoSchemes">-</span></div>
+          <div class="info-row"><span>Subject</span><span id="infoSubject" class="wrap">-</span></div>
+          <div class="info-row"><span>Issuer</span><span id="infoIssuer" class="wrap">-</span></div>
+          <div class="info-row"><span>Cert SHA-256</span><span id="infoCertSha" class="wrap mono">-</span></div>
+        </section>
+
+        <section class="info-section">
+          <h3 class="info-section-title">HASHES</h3>
+          <div class="info-row"><span>MD5</span><span id="infoMd5" class="mono copyable" title="Click to copy">-</span></div>
+          <div class="info-row"><span>SHA-1</span><span id="infoSha1" class="mono copyable" title="Click to copy">-</span></div>
+          <div class="info-row"><span>Size</span><span id="infoSize">-</span></div>
+        </section>
+
+        <section class="info-section expandable" id="infoPermSection">
+          <h3 class="info-section-title">
+            PERMISSIONS <span class="info-count" id="infoPermCount">0</span>
+            <button class="expand-toggle" data-target="infoPermList">&#x25BC;</button>
+          </h3>
+          <ul class="info-list collapsed" id="infoPermList"></ul>
+        </section>
+      </div>
+
+      <div class="modal-actions single">
+        <button class="modal-btn cancel" id="infoDone">CLOSE</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div class="modal-overlay hidden" id="settingsModal" role="dialog" aria-modal="true" aria-labelledby="settingsModalTitle">
+    <div class="modal-box settings">
+      <div class="modal-corners">
+        <span class="corner tl"></span>
+        <span class="corner tr"></span>
+        <span class="corner bl"></span>
+        <span class="corner br"></span>
+      </div>
+      <button class="modal-close" id="settingsClose" aria-label="Close">&#x2715;</button>
+      <h2 class="modal-title settings" id="settingsModalTitle">SETTINGS</h2>
+
+      <section class="info-section">
+        <h3 class="info-section-title">SIGNATURE LINE (OU=)</h3>
+        <p class="settings-hint">This text gets embedded in every APK you rename, so anyone inspecting it can see it came from Automagic.</p>
+
+        <label class="radio-row">
+          <input type="radio" name="sigMode" value="default" id="sigDefault" checked>
+          <span class="radio-label">
+            <strong>DEFAULT</strong>
+            <span class="radio-preview">DMP used Automagic on this APK!</span>
+          </span>
+        </label>
+
+        <label class="radio-row">
+          <input type="radio" name="sigMode" value="tag" id="sigTag">
+          <span class="radio-label">
+            <strong>USE CURRENT TAG</strong>
+            <span class="radio-preview" id="sigTagPreview">{TAG} used Automagic on this APK!</span>
+          </span>
+        </label>
+
+        <label class="radio-row">
+          <input type="radio" name="sigMode" value="custom" id="sigCustom">
+          <span class="radio-label">
+            <strong>CUSTOM</strong>
+            <input type="text" class="neon-input full" id="sigCustomInput" placeholder="Your own message (max 120 chars)" maxlength="120" disabled>
+          </span>
+        </label>
+      </section>
+
+      <section class="info-section">
+        <h3 class="info-section-title">DIAGNOSTICS</h3>
+        <p class="settings-hint">APC writes a debug log every session. Open it when reporting an issue.</p>
+        <button class="modal-btn confirm-green" id="btnOpenLog" type="button">OPEN APCDebug.log</button>
+      </section>
+
+      <div class="modal-actions">
+        <button class="modal-btn cancel" id="settingsCancel">CANCEL</button>
+        <button class="modal-btn confirm-green" id="settingsSave">SAVE</button>
+      </div>
+    </div>
+  </div>
+
   <script src="scripts/drag-drop.js"></script>
   <script src="scripts/ui-controller.js"></script>
   <script src="scripts/progress.js"></script>
+  <script src="scripts/info-modal.js"></script>
+  <script src="scripts/settings-modal.js"></script>
   <script src="scripts/app.js"></script>
 </body>
 </html>

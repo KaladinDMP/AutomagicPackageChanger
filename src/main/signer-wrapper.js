@@ -17,7 +17,12 @@ function execAsync(cmd, args, options = {}) {
   });
 }
 
-async function sign(apkPath) {
+/**
+ * Sign an APK.
+ * @param {string} apkPath
+ * @param {object} [keystore] - { path, alias, storePass, keyPass } - if omitted, uses bundled debug key
+ */
+async function sign(apkPath, keystore = null) {
   const java = getJavaPath();
   const signer = getToolPath('uber-apk-signer.jar');
 
@@ -31,6 +36,15 @@ async function sign(apkPath) {
     '--allowResign',
     '--overwrite'
   ];
+
+  if (keystore && keystore.path) {
+    args.push(
+      '--ks', keystore.path,
+      '--ksAlias', keystore.alias,
+      '--ksPass', keystore.storePass,
+      '--ksKeyPass', keystore.keyPass
+    );
+  }
 
   return execAsync(java, args);
 }
