@@ -1,6 +1,13 @@
 {
-  "_comment": "Known APK signer identities. Detection matches any 'dnContains' substring (case-insensitive) against the signer's Subject or Issuer DN. Order matters — first match wins.",
+  "_comment": "Known APK signer identities. Detection matches any 'dnContains' substring (case-insensitive) against CN/O values in the signer's Subject or Issuer DN (OU and L are ignored to avoid false positives from lineage breadcrumbs). Order matters — first match wins, so list MORE SPECIFIC entries first.",
   "signers": [
+    {
+      "id": "apc",
+      "label": "APC",
+      "fullName": "Automagic Package Changer",
+      "color": "#d400ff",
+      "dnContains": ["Automagic Package Changer"]
+    },
     {
       "id": "vrp",
       "label": "VRP",
@@ -16,13 +23,6 @@
       "dnContains": ["NothingIsFree"]
     },
     {
-      "id": "apc",
-      "label": "APC",
-      "fullName": "Automagic Package Changer",
-      "color": "#d400ff",
-      "dnContains": ["Automagic Package Changer", "Automagic"]
-    },
-    {
       "id": "meta",
       "label": "Meta / Oculus",
       "fullName": "Oculus VR, LLC",
@@ -30,18 +30,18 @@
       "dnContains": ["Oculus VR", "Facebook Technologies", "Meta Platforms"]
     },
     {
-      "id": "google",
-      "label": "Google",
-      "fullName": "Google / Android",
-      "color": "#00d4ff",
-      "dnContains": ["CN=Android", "O=Google Inc."]
-    },
-    {
       "id": "debug",
       "label": "Debug Key",
       "fullName": "Android Debug",
       "color": "#888888",
-      "dnContains": ["CN=Android Debug", "O=Android"]
+      "dnContains": ["CN=Android Debug", "Android Debug"]
+    },
+    {
+      "id": "google",
+      "label": "Google",
+      "fullName": "Google / Android",
+      "color": "#00d4ff",
+      "dnContains": ["O=Google Inc.", "O=Google LLC"]
     }
   ]
 }

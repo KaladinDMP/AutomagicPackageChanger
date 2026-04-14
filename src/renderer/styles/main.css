@@ -117,15 +117,18 @@ body {
   color: #ff4444;
 }
 
-/* App Container */
+/* App Container
+   NOTE: global UI scale is applied via webContents.setZoomFactor in main.js
+   (see APP_ZOOM_FACTOR). Layout paddings/gaps here are already tightened
+   to give comfortable spacing at that zoom, but NOT zoom-dependent. */
 .app-container {
   height: calc(100vh - 32px);
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 16px 24px;
+  padding: 12px 20px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
   background:
     radial-gradient(ellipse at 20% 50%, rgba(138, 43, 226, 0.08) 0%, transparent 50%),
     radial-gradient(ellipse at 80% 20%, rgba(0, 255, 65, 0.04) 0%, transparent 50%),
@@ -154,7 +157,7 @@ body {
 /* Header */
 .app-header {
   text-align: center;
-  padding: 8px 0;
+  padding: 4px 0;
 }
 
 .logo-container {
@@ -603,6 +606,35 @@ body {
 /* Utility */
 .hidden {
   display: none !important;
+}
+
+/* ---------- Already-Tagged Warning Banner ---------- */
+.already-tagged-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 12px 0;
+  padding: 10px 14px;
+  border: 1px solid #ff9100;
+  background: linear-gradient(90deg, rgba(255, 145, 0, 0.12), rgba(255, 23, 68, 0.08));
+  box-shadow: 0 0 10px rgba(255, 145, 0, 0.25), inset 0 0 10px rgba(255, 145, 0, 0.08);
+  color: #ffb347;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-shadow: 0 0 4px rgba(255, 145, 0, 0.6);
+  animation: atb-pulse 2.2s ease-in-out infinite;
+}
+
+.already-tagged-banner .atb-icon {
+  font-size: 16px;
+  color: #ff9100;
+  text-shadow: 0 0 6px #ff9100;
+}
+
+@keyframes atb-pulse {
+  0%, 100% { box-shadow: 0 0 8px rgba(255, 145, 0, 0.2), inset 0 0 8px rgba(255, 145, 0, 0.06); }
+  50%      { box-shadow: 0 0 14px rgba(255, 145, 0, 0.4), inset 0 0 12px rgba(255, 145, 0, 0.12); }
 }
 
 /* ---------- Warning Modal ---------- */
