@@ -16,10 +16,17 @@
       "dnContains": ["NotQuestUnderground"]
     },
     {
+      "id": "vrsrc",
+      "label": "vrSrc",
+      "fullName": "the_vrSrc",
+      "color": "#ff9f1c",
+      "dnContains": ["CN=JF"]
+    },
+    {
       "id": "nif",
       "label": "NIF",
       "fullName": "NothingIsFree",
-      "color": "#39ff14",
+      "color": "#ff3b3b",
       "dnContains": ["NothingIsFree"]
     },
     {
@@ -33,14 +40,14 @@
       "id": "debug",
       "label": "Debug Key",
       "fullName": "Android Debug",
-      "color": "#888888",
+      "color": "#8b5cf6",
       "dnContains": ["CN=Android Debug", "Android Debug"]
     },
     {
       "id": "google",
       "label": "Google",
       "fullName": "Google / Android",
-      "color": "#00d4ff",
+      "color": "#ffd60a",
       "dnContains": ["O=Google Inc.", "O=Google LLC"]
     }
   ]
