@@ -30,14 +30,14 @@ Decompile. Rename. Rebuild. Re-sign. OBB fix.
 
 All of it.
 
-Think of it as your **Phunk / APKognito alternative** but without the "why is this so annoying" phase.
+Think of it as your **Phunk / APKognito alternative** but with an ARMGDDN flair to it.
 
 ---
 
 ## Features
 
 - **Drag & Drop**  
-  Literally drag the file. That's it. If you can't do this, we have bigger problems.
+  Literally drag the file. That's it. 
 
 - **Default Mode (.apc)**  
   Inserts `.apc` like it should have always been there  
